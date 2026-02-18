@@ -5,40 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title id="page-title">Alimar Caterers</title>
     
-    <!-- Dynamic Favicon that updates from admin -->
-    <link id="favicon" rel="icon" type="image/png" href="https://i.ibb.co/ByB6Y0Q/Bizwaziri-Logo.png" />
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#FF6B35" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Alimar" />
     
-    <!-- Fallback emoji favicon -->
+    <!-- Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+    
+    <!-- Dynamic Favicon -->
+    <link id="favicon" rel="icon" type="image/png" href="https://i.ibb.co/ByB6Y0Q/Bizwaziri-Logo.png" />
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍽️</text></svg>" />
     
     <script>
-      // Update title and favicon when settings change in admin
+      // Register Service Worker
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log('Service Worker registered'))
+            .catch(err => console.log('Service Worker error:', err));
+        });
+      }
+
+      // Update title and favicon when settings change
       window.updateSiteInfo = (name, logo) => {
-        // Update page title
         document.title = name || 'Alimar Caterers';
-        
-        // Update favicon if logo is provided
         if (logo) {
           const favicon = document.getElementById('favicon');
-          if (favicon) {
-            favicon.href = logo;
-          }
+          if (favicon) favicon.href = logo;
         }
       };
 
-      // Listen for storage changes (when admin saves)
       window.addEventListener('storage', (e) => {
         if (e.key === 'mobile_kitchen_settings') {
           try {
             const settings = JSON.parse(e.newValue);
             document.title = settings.name || 'Alimar Caterers';
-            
-            // Update favicon if logo exists
             if (settings.logo) {
               const favicon = document.getElementById('favicon');
-              if (favicon) {
-                favicon.href = settings.logo;
-              }
+              if (favicon) favicon.href = settings.logo;
             }
           } catch (error) {
             console.error('Error updating site info:', error);
@@ -46,7 +55,6 @@
         }
       });
 
-      // Manual favicon upload function
       window.uploadFavicon = () => {
         const input = document.createElement('input');
         input.type = 'file';
@@ -67,7 +75,5 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    
-    <!-- To upload custom favicon, open console and type: uploadFavicon() -->
   </body>
 </html>

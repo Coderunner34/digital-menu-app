@@ -4,6 +4,7 @@ import { Footer } from '../components/Footer';
 import { AIAssistant } from '../components/AIAssistant';
 import { useState, useEffect } from 'react';
 import { initializeStorage } from '../../utils/storage';
+import { QRCode } from '../components/QRCodes'; 
 
 export function Layout() {
   const [darkMode, setDarkMode] = useState(false);
